@@ -17,29 +17,49 @@ umi.use(signerIdentity(signer));
         // Follow this JSON structure
         // https://docs.metaplex.com/programs/token-metadata/changelog/v1.0#json-structure
 
-        // const image = ???
-        // const metadata = {
-        //     name: "?",
-        //     symbol: "?",
-        //     description: "?",
-        //     image: "?",
-        //     attributes: [
-        //         {trait_type: '?', value: '?'}
-        //     ],
-        //     properties: {
-        //         files: [
-        //             {
-        //                 type: "image/png",
-        //                 uri: "?"
-        //             },
-        //         ]
-        //     },
-        //     creators: []
-        // };
-        // const myUri = ???
-        // console.log("Your metadata URI: ", myUri);
+        const image = "https://gateway.irys.xyz/7KmL54C3ZwgTfguwzcwb5uWUSBpdwhhmhg3BAscJToLd"
+
+        const metadata = {
+          name: "Chill Guy",
+          symbol: "CHILL",
+          description: "A laid-back chill guy enjoying life on Solana 😎",
+          image,
+          attributes: [
+            { trait_type: "Vibe", value: "Chill" },
+            { trait_type: "Mood", value: "Unbothered" },
+          ],
+          properties: {
+            category: "image",
+            files: [
+              {
+                uri: image,
+                type: "image/png",
+              },
+            ],
+          },
+          creators: [
+            {
+              address: signer.publicKey,
+              share: 100,
+            },
+          ],
+        }
+        
+
+        // Convert metadata to JSON buffer
+        const metadataBuffer = Buffer.from(JSON.stringify(metadata))
+
+        // Wrap as GenericFile
+        const metadataFile = createGenericFile(
+            metadataBuffer,
+            "metadata.json",
+            { contentType: "application/json" }
+        )
+
+        const [myUri] = await umi.uploader.upload([metadataFile])
+        console.log("Your metadata URI: ", myUri);
     }
-    catch(error) {
+    catch (error) {
         console.log("Oops.. Something went wrong", error);
     }
 })();
