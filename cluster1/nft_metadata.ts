@@ -44,19 +44,8 @@ umi.use(signerIdentity(signer));
             },
           ],
         }
-        
 
-        // Convert metadata to JSON buffer
-        const metadataBuffer = Buffer.from(JSON.stringify(metadata))
-
-        // Wrap as GenericFile
-        const metadataFile = createGenericFile(
-            metadataBuffer,
-            "metadata.json",
-            { contentType: "application/json" }
-        )
-
-        const [myUri] = await umi.uploader.upload([metadataFile])
+        const myUri = await umi.uploader.uploadJson(metadata);
         console.log("Your metadata URI: ", myUri);
     }
     catch (error) {
